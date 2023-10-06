@@ -5,7 +5,6 @@ class Program
     static void Main(string[] args)
     {   
         string option;
-        Entry input = new Entry();
         Journal journal = new Journal();
 
         Console.WriteLine("Welcome to your Journal!\n");
@@ -21,14 +20,18 @@ class Program
             switch(option){
                 //Entry Option
                 case "1":
+                Entry input = new Entry();
                 DateTime theCurrentTime = DateTime.Now;
-                string dateText = theCurrentTime.ToShortDateString();
-                string hourMinute = DateTime.Now.ToString("hh:mm tt");
-                Console.WriteLine(dateText + "|" + hourMinute);
+                input._date = theCurrentTime.ToShortDateString();
+                input._time = DateTime.Now.ToString("hh:mm tt");
+                Console.WriteLine(input._prompt = input.GetPrompt());
+                input._entry = Console.ReadLine();
+                journal._journalList.Add(input);
+                input.Display();
                 break;
                 //Display Journal Option
                 case "2":
-
+                journal.Display();
                 break;
                 //Save Journal
                 case "3":
