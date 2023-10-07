@@ -6,8 +6,10 @@ class Program
     {   
         string option;
         Journal journal = new Journal();
+        SaveLoad file = new SaveLoad();
 
         Console.WriteLine("Welcome to your Journal!\n");
+        //Do-While loop to keep program running
         do{
             Console.WriteLine("Please enter a selection:");
             Console.WriteLine("1. Enter Entry");
@@ -35,7 +37,9 @@ class Program
                 break;
                 //Save Journal
                 case "3":
-                
+                Console.WriteLine("What would you like your File Name to be?");
+                file._fileName = Console.ReadLine();
+                file.SaveFile(journal._journalList);
                 break;
                 //Load Journal
                 case "4":
