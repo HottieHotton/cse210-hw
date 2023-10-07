@@ -4,6 +4,7 @@ class Program
 {
     static void Main(string[] args)
     {   
+        //Creates variables to set up the bast of the program
         string option;
         Journal journal = new Journal();
         SaveLoad file = new SaveLoad();
@@ -26,6 +27,7 @@ class Program
                 DateTime theCurrentTime = DateTime.Now;
                 input._date = theCurrentTime.ToShortDateString();
                 input._time = DateTime.Now.ToString("hh:mm tt");
+                Console.WriteLine();
                 Console.WriteLine(input._prompt = input.GetPrompt());
                 input._entry = Console.ReadLine();
                 journal._journalList.Add(input);
@@ -37,13 +39,18 @@ class Program
                 break;
                 //Save Journal
                 case "3":
-                Console.WriteLine("What would you like your File Name to be?");
+                Console.WriteLine("\nWhat would you like your File Name to be?");
                 file._fileName = Console.ReadLine();
                 file.SaveFile(journal._journalList);
                 break;
                 //Load Journal
                 case "4":
-                
+                Console.WriteLine("\nWhat is the name of the file you wish to load?");
+                file._fileName = Console.ReadLine();
+                journal._journalList.Clear();
+                journal._journalList = file.LoadFile();
+                Console.WriteLine("\nLoading Journal...\n");
+                journal.Display();
                 break; 
             }
         }while(option != "0");
