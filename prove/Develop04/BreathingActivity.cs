@@ -9,20 +9,39 @@ public class BreathingActivity : Activity {
     }
 
     public void RunActivity(int time){
+        Console.Clear();
+        base.Countdown();
+        Console.Clear();
         DateTime startTime = DateTime.Now;
         DateTime futureTime = startTime.AddSeconds(time);
         DateTime currentTime = DateTime.Now;
 
-        
         while(currentTime < futureTime)
         {
             Console.WriteLine("Breath In...");
-            base.PauseAnimation(3);
+            Console.Write("1");
+            Thread.Sleep(1000);
+            Console.Write("\b \b");
+            Console.Write("2");
+            Thread.Sleep(1000);
+            Console.Write("\b \b");
+            Console.Write("3");
+            Thread.Sleep(1000);
+            Console.Write("\b \b");
             Console.WriteLine("Breath Out...");
-            base.PauseAnimation(3);
+            Console.Write("1");
+            Thread.Sleep(1000);
+            Console.Write("\b \b");
+            Console.Write("2");
+            Thread.Sleep(1000);
+            Console.Write("\b \b");
+            Console.Write("3");
+            Thread.Sleep(1000);
+            Console.Write("\b \b");
             currentTime = DateTime.Now;
         }
-        Console.WriteLine($"Run for {time} seconds!");
+        base.EndMessage($"Finished! You completed this task in {time} seconds!");
         Thread.Sleep(3000);
+        Console.Clear();
     }
 }

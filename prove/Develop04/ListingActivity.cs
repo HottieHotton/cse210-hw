@@ -6,4 +6,8 @@ public class ListingActivity : Activity {
     {
         base.StartMessage();
     }
+
+    public void RunActivity(int time){
+        
+    }
 }

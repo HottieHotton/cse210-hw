@@ -16,9 +16,37 @@ public abstract class Activity{
         Console.WriteLine("You will do this activity for "+_duration+" seconds! Good luck!\n");
 
         if(GetType().Name == "BreathingActivity"){
-            BreathingActivity _breathing = new BreathingActivity();
-            _breathing.RunActivity(_duration);
+            BreathingActivity breathing = new BreathingActivity();
+            breathing.RunActivity(_duration);
         }
+        else if(GetType().Name == "ReflectionActivity"){
+            ReflectionActivity reflecting = new ReflectionActivity();
+            reflecting.RunActivity(_duration);
+        }
+        else if(GetType().Name == "ListingActivity"){
+            ListingActivity listing = new ListingActivity();
+            listing.RunActivity(_duration);
+        }
+    }
+
+    public void Countdown(){
+        Console.WriteLine("This program will begin in..");
+        Console.Write("5");
+        Thread.Sleep(1000);
+        Console.Write("\b \b");
+        Console.Write("4");
+        Thread.Sleep(1000);
+        Console.Write("\b \b");
+        Console.Write("3");
+        Thread.Sleep(1000);
+        Console.Write("\b \b");
+        Console.Write("2");
+        Thread.Sleep(1000);
+        Console.Write("\b \b");
+        Console.Write("1");
+        Thread.Sleep(1000);
+        Console.Write("\b \b");
+        Console.Write("Begin!");
     }
 
     public void PauseAnimation(int timer){
@@ -38,5 +66,9 @@ public abstract class Activity{
             Console.Write("\b \b");
             x++;
         }
+    }
+
+    public void EndMessage(string end){
+        Console.WriteLine(end);
     }
 }
