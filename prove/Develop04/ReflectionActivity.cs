@@ -45,9 +45,25 @@ public class ReflectionActivity : Activity
         Console.Clear();
         base.Countdown();
         Console.Clear();
-        
-        Console.WriteLine(GetPrompt());
-        base.PauseAnimation(3);
 
+        DateTime startTime = DateTime.Now;
+        DateTime futureTime = startTime.AddSeconds(time);
+        DateTime currentTime = DateTime.Now;
+
+        Console.WriteLine(GetPrompt()+"\n");
+        Console.WriteLine("As you reflect on this moment in time, please reflect on thoughts and feelings through the following questions...");
+        base.PauseAnimation(3);
+        while(currentTime < futureTime){
+            int index = _rand.Next(_reflectionQuestions.Length);
+            if(index >= 0 && index < _reflectionQuestions.Length){
+                string question = _reflectionQuestions[index];
+                Console.WriteLine("\n"+question);
+            }
+            base.PauseAnimation(5);
+            currentTime = DateTime.Now;
+        }
+        base.EndMessage($"Finished! You completed this task in {time} seconds!");
+        Thread.Sleep(3000);
+        Console.Clear();
     }
 }
