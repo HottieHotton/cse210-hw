@@ -1,16 +1,15 @@
 public abstract class Goal{
-    protected string _name;
     protected string _description;
     protected int _score;
 
-    private List<Goal> goals = new List<Goal>();
-
-    public Goal(string name, string description){
-        this._name = name;
+    public Goal(string description, int points){
         this._description = description;
+        this._score = points;
     }
 
-    public void ShowScore(){
+    public virtual void AddGoal(){}
 
-    }
+    public virtual int RecordEvent(){ return _score;}
+
+    public virtual void DisplayGoals(){}
 }
