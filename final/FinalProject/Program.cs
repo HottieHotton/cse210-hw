@@ -5,23 +5,27 @@ class Program
 {
     static async Task Main()
     {
-        string apiKey = "";
-        string apiUrl = "https://api.easypost.com/v2/";
+        Addresses address = new Addresses();
+        Parcels parcel = new Parcels();
+        Shipment shipment = new Shipment();
 
-        Addresses address = new Addresses(apiKey, apiUrl);
-        Parcels parcel = new Parcels(apiKey, apiUrl);
-        Shipment shipment = new Shipment(apiKey, apiUrl);
+        //Having this as is to confirm code is still working
+        //Have retrieve call in EasyBase
+        //Decide where to have Menu
 
-        // Example: create address
-        string toAddressResponse = await address.CreateAddressAsync("John Doe", "123 Main St", "Anytown", "CA", "12345", "US", "123-456-7890");
-        Console.WriteLine($"To Address Response: {toAddressResponse}");
+        // to_address
+        Console.WriteLine("Please enter a desitionation address:\n");
+        string toAddressResponse = await address.CreateAddressAsync();
 
-        // Example: create parcel
-        string parcelResponse = await parcel.CreateParcelAsync(12, 6, 2, 2);
-        Console.WriteLine($"Parcel Response: {parcelResponse}");
+        // from_address
+        Console.WriteLine("Please enter a origin address:\n");
+        string fromAddressJson = await address.CreateAddressAsync();
+
+        // parcel
+        Console.WriteLine("Please enter the dimensions:\n");
+        string parcelResponse = await parcel.CreateParcelAsync();
 
         // Example: create shipment
-        string fromAddressJson = await address.CreateAddressAsync("John Doe", "123 Main St", "Anytown", "CA", "12345", "US", "123-456-7890");
         string shipmentResponse = await shipment.CreateShipmentAsync(toAddressResponse, fromAddressJson, parcelResponse);
         Console.WriteLine($"Shipment Response: {shipmentResponse}");
     }

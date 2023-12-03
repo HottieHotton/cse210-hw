@@ -2,7 +2,11 @@ using System.Threading.Tasks;
 
 public class Shipment : EasyBase
 {
-    public Shipment(string apiKey, string apiUrl) : base(apiKey, apiUrl) { }
+    public Shipment() : base() { }
+
+    public async override void Menu(string choice){
+        
+    }
 
     public async Task<string> CreateShipmentAsync(string toAddressJson, string fromAddressJson, string parcelJson)
     {
@@ -15,6 +19,6 @@ public class Shipment : EasyBase
             }}
         }}";
 
-        return await PostAsync("shipments", shipmentJson);
+        return await base.PostAsync("shipments", shipmentJson);
     }
 }
