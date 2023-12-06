@@ -1,11 +1,30 @@
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 public class Customs : EasyBase
 {
-    public Customs() : base() { }
+    public Customs() : base("customs_infos/") { }
 
-    public async override void Menu(string choice){
-        
+    public async override Task Menu(){
+        string choice;
+        bool cont = true;
+        Console.WriteLine("Welcome to the Customs Menu!\n");
+        while(cont == true){
+            Console.WriteLine("1. Create a Customs Object");
+            Console.WriteLine("2. Return to Main Menu\n");
+            Console.WriteLine("Please select one of the following options(1-2):");
+            choice = Console.ReadLine();
+
+            switch(choice){
+                case "1": break;
+                case "2":
+                    cont = false;
+                    break;
+                default:
+                    Console.WriteLine("Incorrect option, try again!");
+                    break;
+            }
+        }
     }
 
     public async Task<string> CreateCustomsAsync()
@@ -15,6 +34,6 @@ public class Customs : EasyBase
             // Add customs details here
         }}";
 
-        return await base.PostAsync("customs", customsJson);
+        return await base.MakePostRequest(_apiEndpoint, customsJson);
     }
 }

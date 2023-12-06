@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 public class Parcels : EasyBase
 {
@@ -8,10 +9,28 @@ public class Parcels : EasyBase
     protected double _weight;
     protected string _predefined_package;
 
-    public Parcels() : base() {}
+    public Parcels() : base("parcels/") {}
 
-    public async override void Menu(string choice){
-        
+    public async override Task Menu(){
+        string choice;
+        bool cont = true;
+        Console.WriteLine("Welcome to the Parcel Menu!\n");
+        while(cont == true){
+            Console.WriteLine("1. Create Parcel Object");
+            Console.WriteLine("2. Return to Main Menu\n");
+            Console.WriteLine("Please select one of the following options(1-2):");
+            choice = Console.ReadLine();
+
+            switch(choice){
+                case "1": break;
+                case "2":
+                    cont = false;
+                    break;
+                default:
+                    Console.WriteLine("Incorrect option, try again!");
+                    break;
+            }
+        }
     }
 
     public async Task<string> CreateParcelAsync()
@@ -35,6 +54,6 @@ public class Parcels : EasyBase
             ""weight"": ""{_weight}""
         }}";
 
-        return await base.PostAsync("parcels", parcelJson);
+        return await base.MakePostRequest(_apiEndpoint, parcelJson);
     }
 }
