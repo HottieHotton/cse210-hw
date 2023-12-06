@@ -10,7 +10,7 @@ public abstract class EasyBase
 
     public EasyBase(string apiEndpoint){
         this._apiEndpoint = apiEndpoint;
-        _apiKey = "EZTK160a0df591e244fea75fa46f3d48b799Nr1sgXkxiUutTD0YP1S0Zw";
+        _apiKey = "";
         _apiUrlBase = "https://api.easypost.com/v2/";
     }
 
