@@ -3,14 +3,14 @@ using Newtonsoft.Json.Linq;
 
 public class Orders : EasyBase
 {
-    public Orders() : base("orders/") { }
+    public Orders() : base("orders") { }
 
     public async override Task Menu(){
         string choice;
         bool cont = true;
         Console.WriteLine("Welcome to the Orders Menu!");
         while(cont == true){
-            Console.WriteLine("1. Create a Order(Multi-Parcel shipment)");
+            Console.WriteLine("1. Create a Domestic Order(Multi-Parcel shipment)");
             Console.WriteLine("2. Buy an Order");
             Console.WriteLine("3. Return to Main Menu\n");
             Console.WriteLine("Please select one of the following options(1-3):");

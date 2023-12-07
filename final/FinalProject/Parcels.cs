@@ -9,7 +9,7 @@ public class Parcels : EasyBase
     protected double _weight;
     protected string _predefined_package;
 
-    public Parcels() : base("parcels/") {}
+    public Parcels() : base("parcels") {}
 
     public async override Task Menu(){
         string choice;
@@ -22,7 +22,9 @@ public class Parcels : EasyBase
             choice = Console.ReadLine();
 
             switch(choice){
-                case "1": break;
+                case "1": 
+                    Console.WriteLine(await CreateParcelAsync());
+                    break;
                 case "2":
                     cont = false;
                     break;

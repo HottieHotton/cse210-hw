@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 public class Customs : EasyBase
 {
-    public Customs() : base("customs_infos/") { }
+    public Customs() : base("customs_infos") { }
 
     public async override Task Menu(){
         string choice;

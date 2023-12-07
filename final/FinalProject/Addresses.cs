@@ -11,7 +11,7 @@ public class Addresses : EasyBase
     protected string _country;
     protected string _phone;
 
-    public Addresses() : base("addresses/") { }
+    public Addresses() : base("addresses") { }
 
     public async override Task Menu(){
         string choice;
@@ -26,9 +26,19 @@ public class Addresses : EasyBase
             choice = Console.ReadLine();
 
             switch(choice){
-                case "1": break;
-                case "2": break;
-                case "3": break;
+                case "1": 
+                    Console.WriteLine(await CreateAddressAsync());
+                    break;
+                case "2": 
+                    Console.WriteLine(await CreateAndVerifyAddressAsync());
+                    break;
+                case "3": 
+                    Console.WriteLine("How many items would you like to display?");
+                    int pageSize = int.Parse(Console.ReadLine());
+                    string retrieveList = await RetrieveList($"{_apiEndpoint}", pageSize);
+                    JToken formattedList = JToken.Parse(retrieveList);
+                    Console.WriteLine(formattedList);
+                    break;
                 case "4":
                     cont = false;
                     break;
@@ -96,6 +106,6 @@ public class Addresses : EasyBase
             ""phone"": ""{_phone}""
         }}";
 
-        return await base.MakePostRequest($"{_apiEndpoint}create_and_verify", addressJson);
+        return await base.MakePostRequest($"{_apiEndpoint}/create_and_verify", addressJson);
     }
 }

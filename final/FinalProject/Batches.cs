@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 public class Batches : EasyBase
 {
-    public Batches() : base("batches/") { }
+    public Batches() : base("batches") { }
 
     public async override Task Menu(){
         string choice;
@@ -24,7 +24,13 @@ public class Batches : EasyBase
                 case "2": break;
                 case "3": break;
                 case "4": break;
-                case "5": break;
+                case "5": 
+                    Console.WriteLine("How many items would you like to display?");
+                    int pageSize = int.Parse(Console.ReadLine());
+                    string retrieveList = await RetrieveList($"{_apiEndpoint}", pageSize);
+                    JToken formattedList = JToken.Parse(retrieveList);
+                    Console.WriteLine(formattedList);
+                    break;
                 case "6":
                     cont = false;
                     break;
