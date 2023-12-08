@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 public class Customs : EasyBase
 {
@@ -27,7 +28,7 @@ public class Customs : EasyBase
         }
     }
 
-    public async Task<string> CreateCustomsAsync()
+    public async Task<string> CreateStandAloneCustomsAsync()
     {
         string customsJson = $@"
         {{
@@ -35,5 +36,15 @@ public class Customs : EasyBase
         }}";
 
         return await base.MakePostRequest(_apiEndpoint, customsJson);
+    }
+
+    public string CreateCustomsAsync()
+    {
+        string customsJson = $@"
+        {{
+            // Add customs details here
+        }}";
+
+        return customsJson;
     }
 }

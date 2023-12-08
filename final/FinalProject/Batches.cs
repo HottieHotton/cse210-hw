@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 public class Batches : EasyBase
 {
@@ -13,9 +14,8 @@ public class Batches : EasyBase
             Console.WriteLine("1. Create Batch");
             Console.WriteLine("2. Add a Shipment to a Batch");
             Console.WriteLine("3. Remove a Shipment from a Batch");
-            Console.WriteLine("4. Purchase Batch");
-            Console.WriteLine("5. Retrieve a List of Batches");
-            Console.WriteLine("6. Return to Main Menu\n");
+            Console.WriteLine("4. Retrieve a List of Batches");
+            Console.WriteLine("5. Return to Main Menu\n");
             Console.WriteLine("Please select one of the following options(1-6):");
             choice = Console.ReadLine();
 
@@ -23,15 +23,14 @@ public class Batches : EasyBase
                 case "1": break;
                 case "2": break;
                 case "3": break;
-                case "4": break;
-                case "5": 
+                case "4":
                     Console.WriteLine("How many items would you like to display?");
                     int pageSize = int.Parse(Console.ReadLine());
                     string retrieveList = await RetrieveList($"{_apiEndpoint}", pageSize);
                     JToken formattedList = JToken.Parse(retrieveList);
                     Console.WriteLine(formattedList);
                     break;
-                case "6":
+                case "5":
                     cont = false;
                     break;
                 default:

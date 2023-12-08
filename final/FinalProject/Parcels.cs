@@ -1,14 +1,13 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 public class Parcels : EasyBase
 {
-    protected double _length;
-    protected double _width;
-    protected double _height;
-    protected double _weight;
-    protected string _predefined_package;
-
+    protected string _length;
+    protected string _width;
+    protected string _height;
+    protected string _weight;
     public Parcels() : base("parcels") {}
 
     public async override Task Menu(){
@@ -23,7 +22,7 @@ public class Parcels : EasyBase
 
             switch(choice){
                 case "1": 
-                    Console.WriteLine(await CreateParcelAsync());
+                    Console.WriteLine(await CreateStandAloneParcelAsync());
                     break;
                 case "2":
                     cont = false;
@@ -35,27 +34,46 @@ public class Parcels : EasyBase
         }
     }
 
-    public async Task<string> CreateParcelAsync()
+    public async Task<string> CreateStandAloneParcelAsync()
     {
         Console.WriteLine("Please enter the length: ");
-        _length = Convert.ToDouble(Console.ReadLine());
+        _length = Console.ReadLine();
         Console.WriteLine("Please enter the width: ");
-        _width = Convert.ToDouble(Console.ReadLine());
+        _width = Console.ReadLine();
         Console.WriteLine("Please enter the height: ");
-        _height = Convert.ToDouble(Console.ReadLine());
+        _height = Console.ReadLine();
         Console.WriteLine("Please enter the weight(in oz): ");
-        _weight = Convert.ToDouble(Console.ReadLine());
-        Console.WriteLine(_weight);
-        Console.WriteLine("Please enter a predefined_package(press enter to leave empty): ");
-        _predefined_package = Console.ReadLine();
-        string parcelJson = $@"
-        {{
-            ""length"": ""{_length}"",
-            ""width"": ""{_width}"",
-            ""height"": ""{_height}"",
-            ""weight"": ""{_weight}""
-        }}";
-
+        _weight = Console.ReadLine();
+        var parcelObject = new
+        {
+            length= _length,
+            width= _width,
+            height= _height,
+            weight= _weight
+        };
+        // Serialize the addressObject to JSON
+        string parcelJson = JsonConvert.SerializeObject(parcelObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, parcelJson);
+    }
+
+    public string CreateParcelAsync()
+    {
+        Console.WriteLine("Please enter the length: ");
+        _length = Console.ReadLine();
+        Console.WriteLine("Please enter the width: ");
+        _width = Console.ReadLine();
+        Console.WriteLine("Please enter the height: ");
+        _height = Console.ReadLine();
+        Console.WriteLine("Please enter the weight(in oz): ");
+        _weight = Console.ReadLine();
+        var parcelObject = new
+        {
+            length= _length,
+            width= _width,
+            height= _height,
+            weight= _weight
+        };
+        string parcelJson = JsonConvert.SerializeObject(parcelObject, Formatting.Indented);
+        return parcelJson;
     }
 }

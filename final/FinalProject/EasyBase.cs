@@ -54,8 +54,8 @@ public abstract class EasyBase
         await Task.CompletedTask;
     }
 
-    protected async Task<string> BuyCall(string endpoint, string buyContent){
-        buyContent = "1";
-        return await MakePostRequest(endpoint, buyContent);
+    protected async virtual Task BuyCall(){
+        Console.WriteLine("This is the buy call task");
+        await Task.CompletedTask;
     }
 }

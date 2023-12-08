@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 public class Addresses : EasyBase
 {
@@ -27,7 +28,7 @@ public class Addresses : EasyBase
 
             switch(choice){
                 case "1": 
-                    Console.WriteLine(await CreateAddressAsync());
+                    Console.WriteLine(await CreateStandAloneAddressAsync());
                     break;
                 case "2": 
                     Console.WriteLine(await CreateAndVerifyAddressAsync());
@@ -49,7 +50,7 @@ public class Addresses : EasyBase
         }
     }
 
-    public async Task<string> CreateAddressAsync()
+    public async Task<string> CreateStandAloneAddressAsync()
     {
         Console.WriteLine("Please enter the name: ");
         _name = Console.ReadLine();
@@ -65,18 +66,49 @@ public class Addresses : EasyBase
         _country = Console.ReadLine();
         Console.WriteLine("Please enter the phone number: ");
         _phone = Console.ReadLine();
-        string addressJson = $@"
-        {{
-            ""name"": ""{_name}"",
-            ""street1"": ""{_street}"",
-            ""city"": ""{_city}"",
-            ""state"": ""{_state}"",
-            ""zip"": ""{_zip}"",
-            ""country"": ""{_country}"",
-            ""phone"": ""{_phone}""
-        }}";
-
+        var addressObject = new
+        {
+            name= _name,
+            street1= _street,
+            city= _city,
+            state= _state,
+            zip= _zip,
+            country= _country,
+            phone= _phone
+        };
+            // Serialize the addressObject to JSON
+        string addressJson = JsonConvert.SerializeObject(addressObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, addressJson);
+    }
+
+    public string CreateAddressAsync()
+    {
+        Console.WriteLine("Please enter the name: ");
+        _name = Console.ReadLine();
+        Console.WriteLine("Please enter the street address: ");
+        _street = Console.ReadLine();
+        Console.WriteLine("Please enter the city: ");
+        _city = Console.ReadLine();
+        Console.WriteLine("Please enter the state: ");
+        _state = Console.ReadLine();
+        Console.WriteLine("Please enter the zip code: ");
+        _zip = Console.ReadLine();
+        Console.WriteLine("Please enter the country(ISO Code(like US and GB)): ");
+        _country = Console.ReadLine();
+        Console.WriteLine("Please enter the phone number: ");
+        _phone = Console.ReadLine();
+        var addressObject = new
+        {
+            name= _name,
+            street1= _street,
+            city= _city,
+            state= _state,
+            zip= _zip,
+            country= _country,
+            phone= _phone
+        };
+        string addressJson = JsonConvert.SerializeObject(addressObject, Formatting.Indented);
+        return addressJson;
     }
 
     public async Task<string> CreateAndVerifyAddressAsync()
@@ -95,17 +127,18 @@ public class Addresses : EasyBase
         _country = Console.ReadLine();
         Console.WriteLine("Please enter the phone number: ");
         _phone = Console.ReadLine();
-        string addressJson = $@"
-        {{
-            ""name"": ""{_name}"",
-            ""street1"": ""{_street}"",
-            ""city"": ""{_city}"",
-            ""state"": ""{_state}"",
-            ""zip"": ""{_zip}"",
-            ""country"": ""{_country}"",
-            ""phone"": ""{_phone}""
-        }}";
-
+        var addressObject = new
+        {
+            name= _name,
+            street1= _street,
+            city= _city,
+            state= _state,
+            zip= _zip,
+            country= _country,
+            phone= _phone
+        };
+            // Serialize the addressObject to JSON
+        string addressJson = JsonConvert.SerializeObject(addressObject, Formatting.Indented);
         return await base.MakePostRequest($"{_apiEndpoint}/create_and_verify", addressJson);
     }
 }

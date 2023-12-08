@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 public class Shipment : EasyBase
 {
@@ -28,12 +29,12 @@ public class Shipment : EasyBase
 
             switch(choice){
                 case "1": 
-                    string domestic = await CreateDomesticShipmentAsync();
+                    var domestic = await CreateDomesticShipmentAsync();
                     JToken shipDomestic = JToken.Parse(domestic);
                     Console.WriteLine(shipDomestic);
                     break;
                 case "2": 
-                    string international = await CreateInternationalShipmentAsync();
+                    var international = await CreateInternationalShipmentAsync();
                     JToken shipInternational = JToken.Parse(international);
                     Console.WriteLine(shipInternational);
                     break;
@@ -59,25 +60,28 @@ public class Shipment : EasyBase
     {
         // to_address
         Console.WriteLine("\nPlease enter a desitionation address:\n");
-        string toAddressResponse = await _address.CreateAddressAsync();
+        string toAddressJson = _address.CreateAddressAsync();
+        var toAddressResponse = JsonConvert.DeserializeObject(toAddressJson);
 
         // from_address
         Console.WriteLine("\nPlease enter a origin address:\n");
-        string fromAddressResponse = await _address.CreateAddressAsync();
+        string fromAddressJson = _address.CreateAddressAsync();
+        var fromAddressResponse = JsonConvert.DeserializeObject(fromAddressJson);
 
         // parcel
         Console.WriteLine("\nPlease enter the dimensions:\n");
-        string parcelResponse = await _parcel.CreateParcelAsync();
+        string parcelJson = _parcel.CreateParcelAsync();
+        var parcelResponse = JsonConvert.DeserializeObject(parcelJson);
 
-        string shipmentJson = $@"
-        {{
-            ""shipment"": {{
-                ""to_address"": {toAddressResponse},
-                ""from_address"": {fromAddressResponse},
-                ""_parcel"": {parcelResponse}
-            }}
-        }}";
-
+        var shipmentObject = new
+        {
+            shipment = new {
+                to_address= toAddressResponse,
+                from_address = fromAddressResponse,
+                parcel = parcelResponse
+            }
+        };
+        string shipmentJson = JsonConvert.SerializeObject(shipmentObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, shipmentJson);
     }
 
@@ -85,29 +89,30 @@ public class Shipment : EasyBase
     {
         // to_address
         Console.WriteLine("\nPlease enter a desitionation address:\n");
-        string toAddressResponse = await _address.CreateAddressAsync();
+        var toAddressResponse = _address.CreateAddressAsync();
 
         // from_address
         Console.WriteLine("\nPlease enter a origin address:\n");
-        string fromAddressResponse = await _address.CreateAddressAsync();
+        var fromAddressResponse = _address.CreateAddressAsync();
 
         // parcel
         Console.WriteLine("\nPlease enter the dimensions:\n");
-        string parcelResponse = await _parcel.CreateParcelAsync();
+        var parcelResponse = _parcel.CreateParcelAsync();
 
         // Customs
         Console.WriteLine("\nPlease enter your customs information:\n");
-        string customsJson = await _customs.CreateCustomsAsync();
-        string shipmentJson = $@"
-        {{
-            ""shipment"": {{
-                ""to_address"": {toAddressResponse},
-                ""from_address"": {fromAddressResponse},
-                ""_parcel"": {parcelResponse},
-                ""customs_info"": {customsJson}
-            }}
-        }}";
+        var customsObject = _customs.CreateCustomsAsync();
 
+        var shipmentObject = new
+        {
+            shipment = new {
+                to_address= toAddressResponse,
+                from_address = fromAddressResponse,
+                parcel = parcelResponse,
+                customs = customsObject
+            }
+        };
+        string shipmentJson = JsonConvert.SerializeObject(shipmentObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, shipmentJson);
     }
 }
