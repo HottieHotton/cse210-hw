@@ -20,7 +20,7 @@ public class Shipment : EasyBase
         Console.WriteLine("Welcome to the Shipment Menu!\n");
         while(cont == true){
             Console.WriteLine("\n1. Create Domestic Shipment");
-            Console.WriteLine("2. Create International Shipment");
+            Console.WriteLine("2. Create International Shipment(US-Outbound)");
             Console.WriteLine("3. Retrieve a list of Shipments");
             Console.WriteLine("4. Purchase a Shipment");
             Console.WriteLine("5. Return to Main Menu\n");
@@ -47,14 +47,16 @@ public class Shipment : EasyBase
                     break;
                 case "4": 
                     string buyResponse = await BuyCall();
-                    JToken buyJson = JToken.Parse(buyResponse);
-                    string trackingUrl = buyJson["tracker"]["public_url"].ToString();
-                    base.OpenLink(trackingUrl);
-                    string label = buyJson["postage_label"]["label_url"].ToString();
-                    base.OpenLink(label);
-                    if(buyJson["forms"] != null && buyJson["forms"].HasValues){
-                        string invoice = buyJson["forms"]["form_url"].ToString();
-                        base.OpenLink(invoice);
+                    if(buyResponse != "Try again!"){
+                        JToken buyJson = JToken.Parse(buyResponse);
+                        string trackingUrl = buyJson["tracker"]["public_url"].ToString();
+                        base.OpenLink(trackingUrl);
+                        string label = buyJson["postage_label"]["label_url"].ToString();
+                        base.OpenLink(label);
+                        if(buyJson["forms"] != null && buyJson["forms"].HasValues){
+                            string invoice = buyJson["forms"]["form_url"].ToString();
+                            base.OpenLink(invoice);
+                        }
                     }
                     break;
                 case "5":
@@ -71,17 +73,17 @@ public class Shipment : EasyBase
     {
         // to_address
         Console.WriteLine("\nPlease enter a desitionation address:\n");
-        string toAddressJson = _address.CreateAddressAsync();
+        string toAddressJson = await _address.CreateAddressAsync();
         var toAddressResponse = JsonConvert.DeserializeObject(toAddressJson);
 
         // from_address
         Console.WriteLine("\nPlease enter a origin address:\n");
-        string fromAddressJson = _address.CreateAddressAsync();
+        string fromAddressJson = await _address.CreateAddressAsync();
         var fromAddressResponse = JsonConvert.DeserializeObject(fromAddressJson);
 
         // parcel
         Console.WriteLine("\nPlease enter the dimensions:\n");
-        string parcelJson = _parcel.CreateParcelAsync();
+        string parcelJson = await _parcel.CreateParcelAsync();
         var parcelResponse = JsonConvert.DeserializeObject(parcelJson);
 
         var shipmentObject = new
@@ -100,27 +102,28 @@ public class Shipment : EasyBase
     {
         // to_address
         Console.WriteLine("\nPlease enter a desitionation address:\n");
-        var toAddressResponse = _address.CreateAddressAsync();
+        var toAddressResponse = await _address.CreateAddressAsync();
 
         // from_address
         Console.WriteLine("\nPlease enter a origin address:\n");
-        var fromAddressResponse = _address.CreateAddressAsync();
+        var fromAddressResponse = await _address.CreateAddressAsync();
 
         // parcel
         Console.WriteLine("\nPlease enter the dimensions:\n");
-        var parcelResponse = _parcel.CreateParcelAsync();
+        var parcelResponse = await _parcel.CreateParcelAsync();
 
         // Customs
         Console.WriteLine("\nPlease enter your customs information:\n");
-        var customsObject = _customs.CreateCustomsAsync();
+        var customsObject = await _customs.CreateCustomsAsync();
 
+        //Creates shipment body for create call
         var shipmentObject = new
         {
             shipment = new {
                 to_address= toAddressResponse,
                 from_address = fromAddressResponse,
                 parcel = parcelResponse,
-                customs = customsObject
+                customs_info = customsObject
             }
         };
         string shipmentJson = JsonConvert.SerializeObject(shipmentObject, Formatting.Indented);
@@ -128,6 +131,7 @@ public class Shipment : EasyBase
     }
 
     public async override Task<string> BuyCall(){
+        //Uses the Retrieve Shipment method to display 5 recent shipments and their status
         Console.WriteLine("Please enter a shipment that you'd like to purchase: ");
         string retrieveList = await RetrieveShipmentList($"{_apiEndpoint}", 5);
         JToken shipmentList = JToken.Parse(retrieveList);
@@ -136,21 +140,21 @@ public class Shipment : EasyBase
         }
         Console.Write("Enter shipment ID: ");
         string selectedShipmentId = Console.ReadLine();
+
+        //Takes the shipment ID andpulls the json to display rates
         string endpoint = $"{_apiEndpoint}/{selectedShipmentId}";
         string shipmentData = await MakeGetRequest(endpoint);
         JToken shipmentJson = JToken.Parse(shipmentData);
         if (shipmentJson["rates"] != null && shipmentJson["rates"].HasValues){
             Console.WriteLine("Select a rate to purchase:");
-
             // Display a list of rates
-            foreach (var rate in shipmentJson["rates"])
-                {
-                    Console.WriteLine($"{rate["id"]}: {rate["carrier"]}, {rate["service"]}, {rate["rate"]}");
-                }
-
+            foreach (var rate in shipmentJson["rates"]){
+                Console.WriteLine($"{rate["id"]}: {rate["carrier"]}, {rate["service"]}, {rate["rate"]}");
+            }
             Console.Write("Enter rate ID: ");
             string selectedRateId = Console.ReadLine();
 
+            //Creates rate body for the buy call
             var buyContent = new{
                 rate = new{
                     id = selectedRateId
@@ -166,10 +170,9 @@ public class Shipment : EasyBase
                     string carrier = message["carrier"]?.ToString();
                     string errorMessage = message["message"]?.ToString();
 
-                    if (!string.IsNullOrEmpty(carrier) && !string.IsNullOrEmpty(errorMessage))
-                        {
-                            Console.WriteLine($"Error with {carrier}: {errorMessage}");
-                        }
+                    if (!string.IsNullOrEmpty(carrier) && !string.IsNullOrEmpty(errorMessage)){
+                        Console.WriteLine($"Error with {carrier}: {errorMessage}");
+                    }
                 }
                 return "Try again!";
             }

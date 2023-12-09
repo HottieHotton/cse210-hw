@@ -46,7 +46,7 @@ public class Trackers : EasyBase
 
     public async Task<string> CreateTrackerAsync()
     {
-        Console.WriteLine("Please enter a test tracking number(EZ1000000001.....EZ7000000007): ");
+        Console.WriteLine("Please enter a test tracking number(EZ1000000001..through...EZ7000000007 only): ");
         string trackingNum= Console.ReadLine();
         Console.WriteLine("Please enter a carrier(USPS, FedEx, UPS): ");
         string carrier = Console.ReadLine();

@@ -60,20 +60,5 @@ class Program
                     break;
             }
         }
-        // // to_address
-        // Console.WriteLine("Please enter a desitionation address:\n");
-        // string toAddressResponse = await address.CreateAddressAsync();
-
-        // // from_address
-        // Console.WriteLine("Please enter a origin address:\n");
-        // string fromAddressJson = await address.CreateAddressAsync();
-
-        // // parcel
-        // Console.WriteLine("Please enter the dimensions:\n");
-        // string parcelResponse = await parcel.CreateParcelAsync();
-
-        // // Example: create shipment
-        // string shipmentResponse = await shipment.CreateDomesticShipmentAsync(toAddressResponse, fromAddressJson, parcelResponse);
-        // Console.WriteLine($"Shipment Response: {shipmentResponse}");
     }
 }

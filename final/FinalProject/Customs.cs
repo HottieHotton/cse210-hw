@@ -31,7 +31,7 @@ public class Customs : EasyBase
 
             switch(choice){
                 case "1": 
-                    string customs = await CreateStandAloneCustomsAsync();
+                    string customs = await CreateCustomsAsync();
                     JToken customsJson = JToken.Parse(customs);
                     Console.WriteLine(customsJson);
                     break;
@@ -45,7 +45,7 @@ public class Customs : EasyBase
         }
     }
 
-    public async Task<string> CreateStandAloneCustomsAsync()
+    public async Task<string> CreateCustomsAsync()
     {
         string user = "";
         Console.WriteLine("Please enter the person who approves this customs information: ");
@@ -98,60 +98,5 @@ public class Customs : EasyBase
 
         string customsJson = JsonConvert.SerializeObject(customsObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, customsJson);
-    }
-
-    public string CreateCustomsAsync()
-    {
-        string user = "";
-        Console.WriteLine("Please enter the person who approves this customs information: ");
-        _signer = Console.ReadLine();
-        Console.WriteLine("Please enter the content type(ex. 'documents','merchandise', 'gift'): ");
-        _contentType = Console.ReadLine();
-        Console.WriteLine("Please enter what these contents are(clothes, tools, ect.): ");
-        _contentDetails = Console.ReadLine();
-        while(true){
-            Console.WriteLine("Please enter the item description: ");
-            _itemDesription = Console.ReadLine();
-            Console.WriteLine("Please enter the quantity of this item: ");
-            _quantity = Console.ReadLine();
-            Console.WriteLine("Please enter the weight of this item: ");
-            _weight = Console.ReadLine();
-            Console.WriteLine("Please enter the value($) of the item: ");
-            _value = Console.ReadLine();
-            Console.WriteLine("Please enter the tariff code asossiated with this item(ex 620520 for mens cotton shirt): ");
-            _tariffCode = Console.ReadLine();
-            Console.WriteLine("Please enter the origin of the item(US, GB, CA, AU): ");
-            _origin = Console.ReadLine();
-            customsItems.Add(new
-            {
-                description = _itemDesription,
-                quantity = _quantity,
-                weight = _weight,
-                value = _value,
-                hs_tariff_number = _tariffCode,
-                origin_country = _origin
-            });
-
-            Console.WriteLine("Do you want to add another item? Press Enter to continue, press 'q' to stop: ");
-            user = Console.ReadLine();
-            if(user.ToLower() == "q") break;
-        }
-
-        string _restriction = "none";
-        string _eelPfc = "NOEEI 30.37(a)";
-        var customsObject = new{
-            customs_info = new{
-                customs_certify= true,
-                customs_signer = _signer,
-                contents_type = _contentType,
-                contents_explanation = _contentDetails,
-                restriction_type = _restriction,
-                eel_pfc = _eelPfc,
-                customs_items = customsItems
-            }
-        };
-
-        string customsJson = JsonConvert.SerializeObject(customsObject, Formatting.Indented);
-        return customsJson;
     }
 }

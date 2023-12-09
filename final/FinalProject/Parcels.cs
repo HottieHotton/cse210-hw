@@ -22,7 +22,7 @@ public class Parcels : EasyBase
 
             switch(choice){
                 case "1": 
-                    Console.WriteLine(await CreateStandAloneParcelAsync());
+                    Console.WriteLine(await CreateParcelAsync());
                     break;
                 case "2":
                     cont = false;
@@ -34,7 +34,7 @@ public class Parcels : EasyBase
         }
     }
 
-    public async Task<string> CreateStandAloneParcelAsync()
+    public async Task<string> CreateParcelAsync()
     {
         Console.WriteLine("Please enter the length: ");
         _length = Console.ReadLine();
@@ -54,26 +54,5 @@ public class Parcels : EasyBase
         // Serialize the addressObject to JSON
         string parcelJson = JsonConvert.SerializeObject(parcelObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, parcelJson);
-    }
-
-    public string CreateParcelAsync()
-    {
-        Console.WriteLine("Please enter the length: ");
-        _length = Console.ReadLine();
-        Console.WriteLine("Please enter the width: ");
-        _width = Console.ReadLine();
-        Console.WriteLine("Please enter the height: ");
-        _height = Console.ReadLine();
-        Console.WriteLine("Please enter the weight(in oz): ");
-        _weight = Console.ReadLine();
-        var parcelObject = new
-        {
-            length= _length,
-            width= _width,
-            height= _height,
-            weight= _weight
-        };
-        string parcelJson = JsonConvert.SerializeObject(parcelObject, Formatting.Indented);
-        return parcelJson;
     }
 }

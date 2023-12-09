@@ -28,7 +28,7 @@ public class Addresses : EasyBase
 
             switch(choice){
                 case "1": 
-                    Console.WriteLine(await CreateStandAloneAddressAsync());
+                    Console.WriteLine(await CreateAddressAsync());
                     break;
                 case "2": 
                     Console.WriteLine(await CreateAndVerifyAddressAsync());
@@ -50,7 +50,7 @@ public class Addresses : EasyBase
         }
     }
 
-    public async Task<string> CreateStandAloneAddressAsync()
+    public async Task<string> CreateAddressAsync()
     {
         Console.WriteLine("Please enter the name: ");
         _name = Console.ReadLine();
@@ -79,36 +79,6 @@ public class Addresses : EasyBase
             // Serialize the addressObject to JSON
         string addressJson = JsonConvert.SerializeObject(addressObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, addressJson);
-    }
-
-    public string CreateAddressAsync()
-    {
-        Console.WriteLine("Please enter the name: ");
-        _name = Console.ReadLine();
-        Console.WriteLine("Please enter the street address: ");
-        _street = Console.ReadLine();
-        Console.WriteLine("Please enter the city: ");
-        _city = Console.ReadLine();
-        Console.WriteLine("Please enter the state: ");
-        _state = Console.ReadLine();
-        Console.WriteLine("Please enter the zip code: ");
-        _zip = Console.ReadLine();
-        Console.WriteLine("Please enter the country(ISO Code(like US and GB)): ");
-        _country = Console.ReadLine();
-        Console.WriteLine("Please enter the phone number: ");
-        _phone = Console.ReadLine();
-        var addressObject = new
-        {
-            name= _name,
-            street1= _street,
-            city= _city,
-            state= _state,
-            zip= _zip,
-            country= _country,
-            phone= _phone
-        };
-        string addressJson = JsonConvert.SerializeObject(addressObject, Formatting.Indented);
-        return addressJson;
     }
 
     public async Task<string> CreateAndVerifyAddressAsync()
