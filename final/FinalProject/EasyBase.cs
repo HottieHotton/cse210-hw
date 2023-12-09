@@ -1,6 +1,8 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Diagnostics;
 
 public abstract class EasyBase
 {
@@ -49,13 +51,22 @@ public abstract class EasyBase
         return await MakeGetRequest(endpoint);
     }
 
+    protected async Task<string> RetrieveShipmentList(string endpoint, int pageSize){
+        endpoint = $"{endpoint}?page_size={pageSize}&purchased=false";
+        return await MakeGetRequest(endpoint);
+    }
+
     public async virtual Task Menu(){
         Console.WriteLine("Welcome to the Menu");
         await Task.CompletedTask;
     }
 
-    protected async virtual Task BuyCall(){
+    public async virtual Task BuyCall(){
         Console.WriteLine("This is the buy call task");
         await Task.CompletedTask;
+    }
+
+    public void OpenLink(string url){
+        Process.Start(new ProcessStartInfo {FileName = url, UseShellExecute = true});
     }
 }

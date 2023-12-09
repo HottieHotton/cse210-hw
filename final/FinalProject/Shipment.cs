@@ -19,7 +19,7 @@ public class Shipment : EasyBase
         bool cont = true;
         Console.WriteLine("Welcome to the Shipment Menu!\n");
         while(cont == true){
-            Console.WriteLine("1. Create Domestic Shipment");
+            Console.WriteLine("\n1. Create Domestic Shipment");
             Console.WriteLine("2. Create International Shipment");
             Console.WriteLine("3. Retrieve a list of Shipments");
             Console.WriteLine("4. Purchase a Shipment");
@@ -41,11 +41,22 @@ public class Shipment : EasyBase
                 case "3": 
                     Console.WriteLine("How many items would you like to display?");
                     int pageSize = int.Parse(Console.ReadLine());
-                    string retrieveList = await RetrieveList($"{_apiEndpoint}", pageSize);
+                    string retrieveList = await RetrieveShipmentList($"{_apiEndpoint}", pageSize);
                     JToken formattedList = JToken.Parse(retrieveList);
                     Console.WriteLine(formattedList);
                     break;
-                case "4": break;
+                case "4": 
+                    string buyResponse = await BuyCall();
+                    JToken buyJson = JToken.Parse(buyResponse);
+                    string trackingUrl = buyJson["tracker"]["public_url"].ToString();
+                    base.OpenLink(trackingUrl);
+                    string label = buyJson["postage_label"]["label_url"].ToString();
+                    base.OpenLink(label);
+                    if(buyJson["forms"] != null && buyJson["forms"].HasValues){
+                        string invoice = buyJson["forms"]["form_url"].ToString();
+                        base.OpenLink(invoice);
+                    }
+                    break;
                 case "5":
                     cont = false;
                     break;
@@ -114,5 +125,53 @@ public class Shipment : EasyBase
         };
         string shipmentJson = JsonConvert.SerializeObject(shipmentObject, Formatting.Indented);
         return await base.MakePostRequest(_apiEndpoint, shipmentJson);
+    }
+
+    public async override Task<string> BuyCall(){
+        Console.WriteLine("Please enter a shipment that you'd like to purchase: ");
+        string retrieveList = await RetrieveShipmentList($"{_apiEndpoint}", 5);
+        JToken shipmentList = JToken.Parse(retrieveList);
+        foreach(var shipment in shipmentList["shipments"]){
+            Console.WriteLine($"{shipment["id"]}: {shipment["status"]}");
+        }
+        Console.Write("Enter shipment ID: ");
+        string selectedShipmentId = Console.ReadLine();
+        string endpoint = $"{_apiEndpoint}/{selectedShipmentId}";
+        string shipmentData = await MakeGetRequest(endpoint);
+        JToken shipmentJson = JToken.Parse(shipmentData);
+        if (shipmentJson["rates"] != null && shipmentJson["rates"].HasValues){
+            Console.WriteLine("Select a rate to purchase:");
+
+            // Display a list of rates
+            foreach (var rate in shipmentJson["rates"])
+                {
+                    Console.WriteLine($"{rate["id"]}: {rate["carrier"]}, {rate["service"]}, {rate["rate"]}");
+                }
+
+            Console.Write("Enter rate ID: ");
+            string selectedRateId = Console.ReadLine();
+
+            var buyContent = new{
+                rate = new{
+                    id = selectedRateId
+                }
+            };
+            string buyJson = JsonConvert.SerializeObject(buyContent, Formatting.Indented);
+            return await MakePostRequest(_apiEndpoint+$"/{selectedShipmentId}/buy", buyJson);
+        }
+        else
+            {
+                Console.WriteLine("No rates found for the selected shipment.. Errors are as follows:");
+                foreach (var message in shipmentJson["messages"]){
+                    string carrier = message["carrier"]?.ToString();
+                    string errorMessage = message["message"]?.ToString();
+
+                    if (!string.IsNullOrEmpty(carrier) && !string.IsNullOrEmpty(errorMessage))
+                        {
+                            Console.WriteLine($"Error with {carrier}: {errorMessage}");
+                        }
+                }
+                return "Try again!";
+            }
     }
 }

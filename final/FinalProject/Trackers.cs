@@ -19,13 +19,13 @@ public class Trackers : EasyBase
             choice = Console.ReadLine();
 
             switch(choice){
-                case "1": 
+                case "1":
                     string tracking= await CreateTrackerAsync();
                     JToken formattedJson = JToken.Parse(tracking);
                     Console.WriteLine(formattedJson);
                     Console.WriteLine("Opening Tracking Page...");
                     string url = formattedJson["public_url"].ToString();
-                    Process.Start(new ProcessStartInfo {FileName = url, UseShellExecute = true});
+                    base.OpenLink(url);
                     break;
                 case "2": 
                     Console.WriteLine("How many items would you like to display?");
@@ -46,10 +46,14 @@ public class Trackers : EasyBase
 
     public async Task<string> CreateTrackerAsync()
     {
+        Console.WriteLine("Please enter a test tracking number(EZ1000000001.....EZ7000000007): ");
+        string trackingNum= Console.ReadLine();
+        Console.WriteLine("Please enter a carrier(USPS, FedEx, UPS): ");
+        string carrier = Console.ReadLine();
         string trackerJson = $@"
         {{
-            ""tracking_code"": ""EZ1000000001"",
-            ""carrier"": ""USPS""
+            ""tracking_code"": ""{trackingNum}"",
+            ""carrier"": ""{carrier}""
         }}";
 
         string response = await base.MakePostRequest(_apiEndpoint, trackerJson);
